@@ -6,15 +6,25 @@
 //  Copyright © 2017 Cencen Zheng. All rights reserved.
 //
 
+private let NotInstalledError = "您还没有安装微信，不能使用微信分享功能"
 
-class ShareManager {
+class ShareManager: NSObject, WXApiDelegate {
     
-    private init() {}
+    private override init() {}
     
     static let shared: ShareManager = ShareManager()
     
+    func canShare() -> Bool {
+        return WXApi.isWXAppInstalled()
+    }
+    
     @discardableResult
     func sendLink(_ linkUrl: String, _ title: String, _ description: String? = nil, inScene scene: WXScene, _ thumbImage: UIImage? = nil, _ tagName: String? = nil) -> Bool {
+        guard canShare() else {
+            print(NotInstalledError)
+            return false
+        }
+        
         let ext = WXWebpageObject()
         ext.webpageUrl = linkUrl
         
@@ -26,6 +36,11 @@ class ShareManager {
     
     @discardableResult
     func sendImage(_ imageData: Data, inScene scene: WXScene, _ messageExt: String? = nil, _ action: String? = nil, _ thumbImage: UIImage? = nil, _ tagName: String? = nil) -> Bool {
+        guard canShare() else {
+            print(NotInstalledError)
+            return false
+        }
+        
         let ext = WXImageObject()
         ext.imageData = imageData
         
@@ -37,6 +52,11 @@ class ShareManager {
     
     @discardableResult
     func sendText(_ text: String, inScene scene: WXScene) -> Bool {
+        guard canShare() else {
+            print(NotInstalledError)
+            return false
+        }
+        
         let request = SendMessageToWXReq.request(text, nil, true, inScene: scene)
         
         return WXApi.send(request)
