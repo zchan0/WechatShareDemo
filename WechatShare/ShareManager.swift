@@ -18,6 +18,10 @@ class ShareManager: NSObject, WXApiDelegate {
         return WXApi.isWXAppInstalled()
     }
     
+    func onResp(_ resp: BaseResp!) {
+        
+    }
+    
     @discardableResult
     func sendLink(_ linkUrl: String, _ title: String, _ description: String? = nil, inScene scene: WXScene, _ thumbImage: UIImage? = nil, _ tagName: String? = nil) -> Bool {
         guard canShare() else {

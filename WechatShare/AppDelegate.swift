@@ -19,6 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         WXApi.registerApp("wxbeafe42095e03edf")
         
+        
+        
         return true
     }
 
