@@ -2,6 +2,8 @@
 
 ## Installation
 
+这里的安装主要是一些前期准备，包括获取 AppID，集成微信的 WechatOpenSDK 等。
+
 ### Step 1
 
 在[微信开放平台](https://open.weixin.qq.com/)注册应用程序ID，获得AppID。
@@ -20,17 +22,17 @@
 
 ### Step 2
 
-1. 通过CocoaPods集成微信SDK
+1. 通过 CocoaPods 集成微信 SDK
 
    ```
    pod 'WechatOpenSDK'
    ```
 
-2. 添加Objective-C Bridging Header 
+2. 添加 Objective-C Bridging Header 
 
    > 确认在Building setting - Swift Compiler - Code Generation 中添加了bridging header的路径。比如"“YourApp/YourApp-Bridging-Header.h”
 
-3. 在YourApp-Bridging-Header.h中添加下面的代码
+3. 在 `YourApp-Bridging-Header.h` 中添加下面的代码
 
    ```objective-c
    #import “WXApi.h”
@@ -53,11 +55,30 @@
 
    过程：创建多媒体消息(`WXMediaMessage`)或者富文本(`String`)消息，然后创建`SendMessageToWXReq`请求，最后通过`WXApi.send()`方法向微信发起请求。
 
+   ```swift
+   // 1. 创建多媒体消息(WXMediaMessage)或者富文本(String)消息
+   class func message(_ title: String?, _ description: String?, _ mediaObject: Any, _ messageExt: String? = nil, _ messageAction: String? = nil, _ thumbImage: UIImage? = nil, _ tagName: String? = nil) -> WXMediaMessage {
+       ...
+   }
+
+   // 2. 创建SendMessageToWXReq请求
+   class func request(_ text: String?, _ message: WXMediaMessage?, _ bText: Bool, inScene scene: WXScene) -> SendMessageToWXReq {
+       ...
+   }
+
+   // 3. 通过WXApi.send()方法向微信发起请求
+   let message = WXMediaMessage.message(nil, nil, ext, messageExt, action, thumbImage, tagName)
+   let request = SendMessageToWXReq.request(nil, message, false, inScene: scene)
+   WXApi.send(request)
+   ```
+
 3. 处理微信的回应
 
-   实现`onResp`协议方法
+   遵守 `WXApiDelegate` 协议，实现 `onResp` 方法
 
 ## Demo
+
+Demo 简单封装了一个 `ShareManager`，并提供下面三种分享方式。
 
 ```swift
 // 分享文字
